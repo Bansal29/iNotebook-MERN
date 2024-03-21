@@ -1,27 +1,38 @@
 const express = require("express");
 const dotenv = require("dotenv");
-const app = express();
 const connectToMongo = require("./db");
 const cors = require("cors");
 
-app.use(express.json());
-
+// Load environment variables from .env file
 dotenv.config();
 
-app.use(cors());
-//Available routes
+// Create Express app
+const app = express();
+
+// Middleware
+app.use(cors()); // Enable CORS
+app.use(express.json()); // Parse JSON bodies
+
+// Connect to MongoDB
 connectToMongo();
 
-app.use("/", (req, res) => {
-  res.status(200).send("hello from Aryan");
+// Routes
+app.get("/", (req, res) => {
+  res.status(200).send("Hello from Aryan");
 });
+
+// API routes
 app.use("/api/auth", require("./routes/auth"));
 app.use("/api/notes", require("./routes/notes"));
 
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).send("Something broke!");
+});
+
+// Start server
 const port = process.env.PORT || 7000;
-app.listen(port, (err) => {
-  if (err) {
-    console.log(`Error in Running Serve ${port}: ` + err);
-  }
+app.listen(port, () => {
   console.log(`iNoteBook notes app listening on port ${port}`);
 });
