@@ -20,7 +20,7 @@ const Signup = (props) => {
     }
 
     const response = await fetch(
-      "i-notebook-mern-xi.vercel.app/api/auth/createuser",
+      "https://i-notebook-mern-xi.vercel.app/api/auth/createuser",
       {
         method: "POST",
         headers: {
