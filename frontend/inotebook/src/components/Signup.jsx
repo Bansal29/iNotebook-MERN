@@ -19,17 +19,20 @@ const Signup = (props) => {
       return;
     }
 
-    const response = await fetch("http://localhost:5000/api/auth/createuser", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        name: credentials.username,
-        email: credentials.email,
-        password: credentials.password,
-      }),
-    });
+    const response = await fetch(
+      "i-notebook-mern-xi.vercel.app/api/auth/createuser",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: credentials.username,
+          email: credentials.email,
+          password: credentials.password,
+        }),
+      }
+    );
     const json = await response.json();
     console.log(json);
     if (json.success) {
