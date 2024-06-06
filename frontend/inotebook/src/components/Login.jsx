@@ -7,7 +7,7 @@ const Login = (props) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const response = await fetch(
-      "i-notebook-mern-xi.vercel.app/api/auth/login",
+      "https://i-notebook-mern-xi.vercel.app/api/auth/login",
       {
         method: "POST",
         headers: {
