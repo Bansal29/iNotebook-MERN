@@ -7,39 +7,48 @@ const NoteState = (props) => {
 
   //Add a note
   const addNote = async (title, description, tag) => {
-    const response = await fetch(`${host}/api/notes/addnote`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-      body: JSON.stringify({ title, description, tag }),
-    });
+    const response = await fetch(
+      `https://i-notebook-mern-xi.vercel.app/api/notes/addnote`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ title, description, tag }),
+      }
+    );
     const note = await response.json();
     setNotes(notes.concat(note));
   };
   //fetchall notes
   const getNotes = async () => {
-    const response = await fetch(`${host}/api/notes/fetchallnotes`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
+    const response = await fetch(
+      `https://i-notebook-mern-xi.vercel.app/api/notes/fetchallnotes`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+      }
+    );
     const json = await response.json();
     console.log(json);
     setNotes(json);
   };
   //Delete a note
   const deleteNote = async (id) => {
-    const response = await fetch(`${host}/api/notes/deletenote/${id}`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-    });
+    const response = await fetch(
+      `https://i-notebook-mern-xi.vercel.app/api/notes/deletenote/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+      }
+    );
     const json = response.json();
     console.log(json);
     const newnotes = notes.filter((note) => {
@@ -49,14 +58,17 @@ const NoteState = (props) => {
   };
   //Edit a note
   const editNote = async (id, title, desc, tag) => {
-    const response = await fetch(`${host}/api/notes/updatenote/${id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-        "auth-token": localStorage.getItem("token"),
-      },
-      body: JSON.stringify({ title, desc, tag }),
-    });
+    const response = await fetch(
+      `https://i-notebook-mern-xi.vercel.app/api/notes/updatenote/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "auth-token": localStorage.getItem("token"),
+        },
+        body: JSON.stringify({ title, desc, tag }),
+      }
+    );
     const json = response.json();
     console.log(json);
     let newNotes = JSON.parse(JSON.stringify(notes));
