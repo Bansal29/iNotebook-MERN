@@ -3,7 +3,7 @@ const dotenv = require("dotenv");
 const connectToMongo = require("./db");
 const cors = require("cors");
 const corsConfig = {
-  origin: "http://localhost:3000", // Allows requests from all origins (replace with specific origin if needed)
+  origin: "*", // Allows requests from all origins (replace with specific origin if needed)
   credentials: true, // Allows sending cookies and other credentials
   methods: ["GET", "POST", "PUT", "DELETE"], // Allowed HTTP methods
 };
