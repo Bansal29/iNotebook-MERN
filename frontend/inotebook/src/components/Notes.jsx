@@ -6,6 +6,7 @@ import Addnote from "./Addnote";
 import { useRef } from "react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+
 const Notes = (props) => {
   const navigate = useNavigate();
   const context = useContext(noteContext);
