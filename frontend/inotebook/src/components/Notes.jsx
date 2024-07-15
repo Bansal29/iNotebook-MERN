@@ -1,32 +1,32 @@
-import { useEffect } from "react";
+import { useEffect, useContext, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
-import { useContext } from "react";
 import Noteitem from "./Noteitem";
 import Addnote from "./Addnote";
-import { useRef } from "react";
-import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 const Notes = (props) => {
   const navigate = useNavigate();
   const context = useContext(noteContext);
-  const { notes, getNotes, editNote } = context;
+  const { filteredNotes, getNotes, editNote } = context;
   const [note, setNote] = useState({ id: "", etitle: "", edesc: "", etag: "" });
+
   const handleClick = (e) => {
     editNote(note.id, note.etitle, note.edesc, note.etag);
     refClose.current.click();
   };
+
   const onChange = (event) => {
     setNote({ ...note, [event.target.name]: event.target.value });
   };
+
   useEffect(() => {
     if (localStorage.getItem("token")) {
       getNotes();
     } else {
       navigate("/login");
     }
-    // eslint-disable-next-line
-  }, []);
+  }, [getNotes, navigate]);
+
   const updateNote = (currentNote) => {
     ref.current.click();
     setNote({
@@ -36,8 +36,10 @@ const Notes = (props) => {
       etag: currentNote.tag,
     });
   };
+
   const ref = useRef(null);
   const refClose = useRef(null);
+
   return (
     <div>
       <Addnote />
@@ -144,9 +146,9 @@ const Notes = (props) => {
       <div className="row my-3">
         <h2>Your Notes</h2>
         <div className="container mx-2">
-          {notes.length === 0 && "No notes to display!"}
+          {filteredNotes.length === 0 && "No notes to display!"}
         </div>
-        {notes.map((note) => {
+        {filteredNotes.map((note) => {
           return (
             <Noteitem key={note._id} updateNote={updateNote} note={note} />
           );

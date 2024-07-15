@@ -8,14 +8,17 @@ import Alert from "./components/Alert";
 import Login from "./components/Login";
 import Signup from "./components/Signup";
 import { useState } from "react";
+
 function App() {
   const [alert, setAlert] = useState({ text: "", type: "" });
+
   const showAlert = (message, type) => {
     setAlert({ text: message, type: type });
     setTimeout(() => {
       setAlert(null);
     }, 1100);
   };
+
   return (
     <NoteState>
       <Router>

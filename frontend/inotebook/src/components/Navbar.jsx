@@ -1,14 +1,27 @@
-// import React, { useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { useState, useContext } from "react";
+import NoteContext from "../context/notes/noteContext";
+
 const Navbar = () => {
+  const [searchText, setSearchText] = useState("");
+  const { searchNotes } = useContext(NoteContext);
   const navigate = useNavigate();
+  let location = useLocation();
+
+  const handleSearchChange = (e) => {
+    setSearchText(e.target.value);
+    searchNotes(searchText);
+  };
+  const handleSearchresult = () => {
+    searchNotes(searchText);
+  };
+
   const handleLogout = () => {
     localStorage.removeItem("token");
-    console.log(localStorage.length);
     navigate("/login");
   };
-  let location = useLocation();
+
   return (
     <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
       <div className="container-fluid">
@@ -68,9 +81,24 @@ const Navbar = () => {
               </Link>
             </form>
           ) : (
-            <button onClick={handleLogout} className="btn btn-danger">
-              LogOut
-            </button>
+            <form className="d-flex">
+              <input
+                type="text"
+                placeholder="Search notes..."
+                value={searchText}
+                onChange={handleSearchChange}
+                className="form-control me-2"
+              />
+              <button
+                onClick={handleSearchresult}
+                className="btn btn-success mx-2"
+              >
+                Search
+              </button>
+              <button onClick={handleLogout} className="btn btn-danger mx-2">
+                LogOut
+              </button>
+            </form>
           )}
         </div>
       </div>

@@ -1,95 +1,113 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NoteContext from "./noteContext";
 
 const NoteState = (props) => {
-  const host = "https://i-notebook-mern-xi.vercel.app/";
-  const [notes, setNotes] = useState([]);
+  const host = "https://i-notebook-mern-xi.vercel.app";
 
-  //Add a note
+  const [notes, setNotes] = useState([]);
+  const [filteredNotes, setFilteredNotes] = useState([notes]);
+
+  // useEffect(() => {
+  //   setFilteredNotes(notes); // Initialize filteredNotes when notes change
+  // }, [notes]);
+
   const addNote = async (title, description, tag) => {
-    const response = await fetch(
-      `https://i-notebook-mern-xi.vercel.app/api/notes/addnote`,
-      {
+    try {
+      const response = await fetch(`${host}/api/notes/addnote`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           "auth-token": localStorage.getItem("token"),
         },
         body: JSON.stringify({ title, description, tag }),
-      }
-    );
-    const note = await response.json();
-    setNotes(notes.concat(note));
+      });
+      const note = await response.json();
+      setNotes([...notes, note]); // Add new note to notes array
+    } catch (error) {
+      console.error("Error adding note:", error);
+    }
   };
-  //fetchall notes
+
   const getNotes = async () => {
-    const response = await fetch(
-      `https://i-notebook-mern-xi.vercel.app/api/notes/fetchallnotes`,
-      {
+    try {
+      const response = await fetch(`${host}/api/notes/fetchallnotes`, {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
           "auth-token": localStorage.getItem("token"),
         },
-      }
-    );
-    const json = await response.json();
-    console.log(json);
-    setNotes(json);
+      });
+      const json = await response.json();
+      setNotes(json);
+      setFilteredNotes(json);
+    } catch (error) {
+      console.error("Error fetching notes:", error);
+    }
   };
-  //Delete a note
+
   const deleteNote = async (id) => {
-    const response = await fetch(
-      `https://i-notebook-mern-xi.vercel.app/api/notes/deletenote/${id}`,
-      {
+    try {
+      await fetch(`${host}/api/notes/deletenote/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           "auth-token": localStorage.getItem("token"),
         },
-      }
-    );
-    const json = response.json();
-    console.log(json);
-    const newnotes = notes.filter((note) => {
-      return note._id !== id;
-    });
-    setNotes(newnotes);
+      });
+      const newNotes = notes.filter((note) => note._id !== id);
+      setNotes(newNotes);
+      setFilteredNotes(newNotes);
+    } catch (error) {
+      console.error("Error deleting note:", error);
+    }
   };
-  //Edit a note
+
   const editNote = async (id, title, desc, tag) => {
-    const response = await fetch(
-      `https://i-notebook-mern-xi.vercel.app/api/notes/updatenote/${id}`,
-      {
+    try {
+      await fetch(`${host}/api/notes/updatenote/${id}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
           "auth-token": localStorage.getItem("token"),
         },
         body: JSON.stringify({ title, desc, tag }),
-      }
-    );
-    const json = response.json();
-    console.log(json);
-    let newNotes = JSON.parse(JSON.stringify(notes));
-    for (let index = 0; index < notes.length; index++) {
-      const element = newNotes[index];
-      if (element._id === id) {
-        element.title = title;
-        element.description = desc;
-        element.tag = tag;
-        break;
-      }
+      });
+      const newNotes = notes.map((note) =>
+        note._id === id ? { ...note, title, description: desc, tag } : note
+      );
+      setNotes(newNotes);
+      setFilteredNotes(newNotes);
+    } catch (error) {
+      console.error("Error updating note:", error);
     }
-    setNotes(newNotes);
+  };
+
+  const searchNotes = (query) => {
+    if (!query) {
+      setFilteredNotes(notes); // Reset to all notes when query is empty
+    } else {
+      const filtered = notes.filter((note) =>
+        note.title.toLowerCase().includes(query.toLowerCase())
+      );
+      setFilteredNotes(filtered);
+    }
   };
 
   return (
     <NoteContext.Provider
-      value={{ notes, addNote, deleteNote, editNote, getNotes }}
+      value={{
+        notes,
+        filteredNotes,
+        addNote,
+        deleteNote,
+        editNote,
+        getNotes,
+        searchNotes,
+      }}
     >
       {props.children}
     </NoteContext.Provider>
   );
 };
+
 export default NoteState;
